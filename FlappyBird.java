@@ -112,6 +112,82 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
+	int speed = 8;
+
+		ticks++;
+
+			for (int i = 0; i < columns.size(); i++)
+			{
+				Rectangle column = columns.get(i);
+
+				column.x -= speed;
+			}
+
+			if (ticks % 2 == 0 && yMotion < 15)
+			{
+				yMotion += 2;
+			}
+
+			for (int i = 0; i < columns.size(); i++)
+			{
+				Rectangle column = columns.get(i);
+
+				if (column.x + column.width < 0)
+				{
+					columns.remove(column);
+
+					if (column.y == 0)
+					{
+						addColumn(false);
+					}
+				}
+			}
+
+			bird.y += yMotion;
+
+			for (Rectangle column : columns)
+			{
+				if (column.y == 0 && bird.x + bird.width / 2 > column.x + column.width / 2 - 10 && bird.x + bird.width / 2 < column.x + column.width / 2 + 10)
+				{
+					score++;
+				}
+
+				if (column.intersects(bird))
+				{
+					gameOver = true;
+
+					if (bird.x <= column.x)
+					{
+						bird.x = column.x - bird.width;
+
+					}
+					else
+					{
+						if (column.y != 0)
+						{
+							bird.y = column.y - bird.height;
+						}
+						else if (bird.y < column.height)
+						{
+							bird.y = column.height;
+						}
+					}
+				}
+			}
+
+			if (bird.y > HEIGHT - 120 || bird.y < 0)
+			{
+				gameOver = true;
+			}
+
+			if (bird.y + yMotion >= HEIGHT - 120)
+			{
+				bird.y = HEIGHT - 120 - bird.height;
+				gameOver = true;
+			}
+		
+
+		renderer.repaint();
 	}
 	public void repaint(Graphics g) 	//responsible for handling graphics whenrestarting game
 	{
