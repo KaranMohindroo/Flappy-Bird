@@ -111,11 +111,12 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 	}
 	@Override
 	public void actionPerformed(ActionEvent e)
-	{
-	int speed = 8;
+	{int speed = 8;
 
 		ticks++;
 
+		if (started)
+		{
 			for (int i = 0; i < columns.size(); i++)
 			{
 				Rectangle column = columns.get(i);
@@ -185,7 +186,7 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 				bird.y = HEIGHT - 120 - bird.height;
 				gameOver = true;
 			}
-		
+		}
 
 		renderer.repaint();
 	}
