@@ -114,4 +114,56 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 			g.drawString(String.valueOf(score), WIDTH / 2 - 25, 100);
 		}
 	}
+	
+	public static void main(String[] args)
+	{
+		flappyBird = new FlappyBird();
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e)
+	{
+		jump();
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e)
+	{
+		if (e.getKeyCode() == KeyEvent.VK_SPACE)
+		{
+			jump();
+		}
+	}
+	
+	@Override
+	public void mousePressed(MouseEvent e)
+	{
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e)
+	{
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e)
+	{
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e)
+	{
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e)
+	{
+
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e)
+	{
+
+	}
 }
