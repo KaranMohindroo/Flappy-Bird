@@ -19,4 +19,21 @@ import javax.swing.Timer;
 public class FlappyBird implements ActionListener, MouseListener, KeyListener
 {
   
+  public FlappyBird()  //Frame of game
+  {
+    JFrame jframe = new JFrame();
+		Timer timer = new Timer(20, this);
+
+		renderer = new Renderer();
+		rand = new Random();
+
+		jframe.add(renderer);
+		jframe.setTitle("Flappy Box");
+		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jframe.setSize(WIDTH, HEIGHT);
+		jframe.addMouseListener(this);
+		jframe.addKeyListener(this);
+		jframe.setResizable(false);
+		jframe.setVisible(true);
+  }
 }
