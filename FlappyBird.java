@@ -56,4 +56,9 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 
 		timer.start();
   }
+  public void paintColumn(Graphics g, Rectangle column)
+	{
+		g.setColor(Color.green.darker());
+		g.fillRect(column.x, column.y, column.width, column.height);
+	}
 }
