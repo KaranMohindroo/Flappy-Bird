@@ -109,6 +109,10 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 			yMotion -= 10;
 		}
 	}
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+	}
 	public void repaint(Graphics g) 	//responsible for handling graphics whenrestarting game
 	{
 		g.setColor(Color.cyan);
