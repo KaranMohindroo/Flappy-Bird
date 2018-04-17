@@ -56,7 +56,7 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 
 		timer.start();
   }
-  public void addColumn(boolean start)
+  public void addColumn(boolean start) 			//obstacle
 	{
 		int space = 300; // it is the space between two obstacle vertically
 		int width = 100; // it is the width of rectangular obstacle
@@ -78,9 +78,9 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 		g.setColor(Color.green.darker());
 		g.fillRect(column.x, column.y, column.width, column.height);
 	}
-	public void repaint(Graphics g)
+	public void repaint(Graphics g) 	//responsible for handling graphics whenrestarting game
 	{
-	g.setColor(Color.cyan);
+		g.setColor(Color.cyan);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 
 		g.setColor(Color.orange);
@@ -99,5 +99,19 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 
 		g.setColor(Color.white);
 		g.setFont(new Font("Arial", 1, 100));
+		if (!started)
+		{
+			g.drawString("Click to start!", 75, HEIGHT / 2 - 50);
+		}
+
+		if (gameOver)
+		{
+			g.drawString("Game Over!", 100, HEIGHT / 2 - 50);
+		}
+
+		if (!gameOver && started)
+		{
+			g.drawString(String.valueOf(score), WIDTH / 2 - 25, 100);
+		}
 	}
 }
