@@ -78,6 +78,24 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 		g.setColor(Color.green.darker());
 		g.fillRect(column.x, column.y, column.width, column.height);
 	}
+	public void jump()  // responsible for jumps of box/bird
+	{
+		
+
+		if (!started)
+		{
+			started = true;
+		}
+		else if (!gameOver)
+		{
+			if (yMotion > 0)
+			{
+				yMotion = 0;
+			}
+
+			yMotion -= 10;
+		}
+	}
 	public void repaint(Graphics g) 	//responsible for handling graphics whenrestarting game
 	{
 		g.setColor(Color.cyan);
