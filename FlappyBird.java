@@ -74,7 +74,7 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 	}
   public void paintColumn(Graphics g, Rectangle column)
 	{
-		g.setColor(Color.green.darker());
+		g.setColor(Color.MAGENTA.darker());
 		g.fillRect(column.x, column.y, column.width, column.height);
 	}
 	public void jump()  // responsible for jumps of box/bird
@@ -191,13 +191,13 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 	}
 	public void repaint(Graphics g) 	//responsible for handling graphics whenrestarting game
 	{
-		g.setColor(Color.cyan);
+		g.setColor(Color.ORANGE);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 
 		g.setColor(Color.orange);
 		g.fillRect(0, HEIGHT - 120, WIDTH, 120);
 
-		g.setColor(Color.green);
+		g.setColor(Color.MAGENTA);
 		g.fillRect(0, HEIGHT - 120, WIDTH, 20);
 
 		g.setColor(Color.red);
@@ -208,16 +208,16 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 			paintColumn(g, column);
 		}
 
-		g.setColor(Color.red);
+		g.setColor(Color.white);
 		g.setFont(new Font("Arial", 1, 100));
 		if (!started)
 		{
 			g.setFont(new Font("Arial", 1, 100));
 			g.drawString("Click to start!", 75, HEIGHT / 2 - 50);
-			g.setFont(new Font("Arial", 1, 30));
+			g.setFont(new Font("Arial", 1, 50));
 			g.drawString("High score", 25, HEIGHT / 2 - 350);
 			g.drawString(String.valueOf(highScore), 25, HEIGHT / 2 - 310);
-			g.drawString("Score", WIDTH-100, HEIGHT / 2 - 350);
+			g.drawString("Score", WIDTH-200, HEIGHT / 2 - 350);
 			g.drawString(String.valueOf(score), WIDTH  - 100, HEIGHT / 2 - 310);
 		}
 
@@ -228,19 +228,19 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 			
 			if(score>highScore)
 				highScore=score;
-			g.setFont(new Font("Arial", 1, 30));
+			g.setFont(new Font("Arial", 1, 50));
 			g.drawString("High score", 25, HEIGHT / 2 - 350);
 			g.drawString(String.valueOf(highScore), 25, HEIGHT / 2 - 310);
-			g.drawString("Score", WIDTH-100, HEIGHT / 2 - 350);
+			g.drawString("Score", WIDTH-200, HEIGHT / 2 - 350);
 			g.drawString(String.valueOf(score), WIDTH  - 100, HEIGHT / 2 - 310);
 		}
 
 		if (!gameOver && started)
 		{
-			g.setFont(new Font("Arial", 1, 30));
+			g.setFont(new Font("Arial", 1, 50));
 			g.drawString("High score", 25, HEIGHT / 2 - 350);
 			g.drawString(String.valueOf(highScore), 25, HEIGHT / 2 - 310);
-			g.drawString("Score", WIDTH-100, HEIGHT / 2 - 350);
+			g.drawString("Score", WIDTH-200, HEIGHT / 2 - 350);
 			g.drawString(String.valueOf(score), WIDTH  - 100, HEIGHT / 2 - 310);
 		}
 	}
@@ -297,3 +297,4 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 
 	}
 }
+
