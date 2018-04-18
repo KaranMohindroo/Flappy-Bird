@@ -105,12 +105,12 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 				yMotion = 0;
 			}
 
-			yMotion -= 10;
+			yMotion -= 12;
 		}
 	}
 	@Override
 	public void actionPerformed(ActionEvent e)
-	{int speed = 8;
+	{int speed = 10;
 
 		ticks++;
 
