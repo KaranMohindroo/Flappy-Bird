@@ -1,6 +1,5 @@
 package Flappy-Bird;
 
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -25,7 +24,7 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 	public Renderer renderer;
 	public Rectangle bird;
 	public ArrayList<Rectangle> columns;
-	public int ticks, yMotion, score;
+	public int ticks, yMotion, score, highScore;
 	public boolean gameOver, started;
 	public Random rand;
 	
@@ -62,7 +61,7 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 		int width = 100; // it is the width of rectangular obstacle
 		int height = 50 + rand.nextInt(300); //height of rectangular obstacle will be decided randomly
 
-		if (start) // at the arart of game
+		if (start) // at the start of game
 		{
 			columns.add(new Rectangle(WIDTH + width + columns.size() * 300, HEIGHT - height - 120, width, height));
 			columns.add(new Rectangle(WIDTH + width + (columns.size() - 1) * 300, 0, width, HEIGHT - height - space));
@@ -209,22 +208,40 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 			paintColumn(g, column);
 		}
 
-		g.setColor(Color.white);
+		g.setColor(Color.red);
 		g.setFont(new Font("Arial", 1, 100));
 		if (!started)
 		{
+			g.setFont(new Font("Arial", 1, 100));
 			g.drawString("Click to start!", 75, HEIGHT / 2 - 50);
+			g.setFont(new Font("Arial", 1, 30));
+			g.drawString("High score", 25, HEIGHT / 2 - 350);
+			g.drawString(String.valueOf(highScore), 25, HEIGHT / 2 - 310);
+			g.drawString("Score", WIDTH-100, HEIGHT / 2 - 350);
+			g.drawString(String.valueOf(score), WIDTH  - 100, HEIGHT / 2 - 310);
 		}
 
 		if (gameOver)
 		{
+			g.setFont(new Font("Arial", 1, 100));
 			g.drawString("Game Over!", 100, HEIGHT / 2 - 50);
-			g.drawString(String.valueOf(score), WIDTH / 2 - 25, 100);//to display score after game over also
+			
+			if(score>highScore)
+				highScore=score;
+			g.setFont(new Font("Arial", 1, 30));
+			g.drawString("High score", 25, HEIGHT / 2 - 350);
+			g.drawString(String.valueOf(highScore), 25, HEIGHT / 2 - 310);
+			g.drawString("Score", WIDTH-100, HEIGHT / 2 - 350);
+			g.drawString(String.valueOf(score), WIDTH  - 100, HEIGHT / 2 - 310);
 		}
 
 		if (!gameOver && started)
 		{
-			g.drawString(String.valueOf(score), WIDTH / 2 - 25, 100);
+			g.setFont(new Font("Arial", 1, 30));
+			g.drawString("High score", 25, HEIGHT / 2 - 350);
+			g.drawString(String.valueOf(highScore), 25, HEIGHT / 2 - 310);
+			g.drawString("Score", WIDTH-100, HEIGHT / 2 - 350);
+			g.drawString(String.valueOf(score), WIDTH  - 100, HEIGHT / 2 - 310);
 		}
 	}
 	
