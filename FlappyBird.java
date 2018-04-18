@@ -1,4 +1,5 @@
 package Flappy-Bird;
+package flappyBird;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -14,10 +15,16 @@ import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.Timer;
+import sun.audio.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.io.*;
 
 public class FlappyBird implements ActionListener, MouseListener, KeyListener
 {
-  
+	static AudioPlayer MGP = AudioPlayer.player;
+	static AudioStream BGM;
+	static AudioData MD;
   public static FlappyBird flappyBird;
 
 	public final int WIDTH = 800, HEIGHT = 800;
@@ -35,7 +42,7 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 
 		renderer = new Renderer();
 		rand = new Random();
-
+	  music();
 		jframe.add(renderer);
 		jframe.setTitle("Flappy Box");
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -55,6 +62,7 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 
 		timer.start();
   }
+
   public void addColumn(boolean start) 			//obstacle
 	{
 		int space = 300; // it is the space between two obstacle vertically
@@ -81,7 +89,8 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 	{
 		
 		if (gameOver) 		// game over then jump restarts the game
-		{
+		{	
+			music();
 			bird = new Rectangle(WIDTH / 2 - 10, HEIGHT / 2 - 10, 20, 20);
 			columns.clear();
 			yMotion = 0;
@@ -223,6 +232,7 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 
 		if (gameOver)
 		{
+			AudioPlayer.player.stop(BGM);
 			g.setFont(new Font("Arial", 1, 100));
 			g.drawString("Game Over!", 100, HEIGHT / 2 - 50);
 			
@@ -237,6 +247,7 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 
 		if (!gameOver && started)
 		{
+
 			g.setFont(new Font("Arial", 1, 50));
 			g.drawString("High score", 25, HEIGHT / 2 - 350);
 			g.drawString(String.valueOf(highScore), 25, HEIGHT / 2 - 310);
@@ -244,7 +255,28 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 			g.drawString(String.valueOf(score), WIDTH  - 100, HEIGHT / 2 - 310);
 		}
 	}
-	
+	public static void music()
+	{
+
+
+		ContinuousAudioDataStream loop = null;
+
+		try
+		{
+			InputStream test = new FileInputStream("E:\\Movies\\Batman\\S3\\fl.wav");
+			BGM = new AudioStream(test);
+			AudioPlayer.player.start(BGM);
+			//  AudioPlayer.player.stop(BGM);
+		}
+		catch(FileNotFoundException e){
+			System.out.print(e.toString());
+		}
+		catch(IOException error)
+		{
+			System.out.print(error.toString());
+		}
+		MGP.start(loop);
+	}
 	public static void main(String[] args)
 	{
 		flappyBird = new FlappyBird();
@@ -297,4 +329,3 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 
 	}
 }
-
