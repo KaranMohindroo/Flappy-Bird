@@ -321,6 +321,7 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 	public void keyTyped(KeyEvent e)
 	{
 
+
 	}
 
 	@Override
