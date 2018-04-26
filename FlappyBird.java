@@ -1,6 +1,12 @@
-package Flappy-Bird;
-package flappyBird;
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package flappybird;
 
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
+import sun.audio.ContinuousAudioDataStream;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -19,319 +25,150 @@ import sun.audio.*;
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.*;
+import sun.audio.*;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.*;
+import java.util.ArrayList;
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.Timer;
 
-public class FlappyBird implements ActionListener, MouseListener, KeyListener
-{
-	static AudioPlayer MGP = AudioPlayer.player;
-	static AudioStream BGM;
-	static AudioData MD;
-  public static FlappyBird flappyBird;
+/**
+ *
+ * @author User
+ */
+public class FlappyBird implements ActionListener, KeyListener {
+    
+    public static final int FPS = 80, WIDTH = 1000, HEIGHT = 680;
+    
+    private Bird bird;
+    private JFrame frame;
+    private JPanel panel;
+    private ArrayList<Rectangle> rects;
+    private int time, scroll;
+    private Timer t;
+    
+    private boolean paused;
+    static AudioPlayer MGP = AudioPlayer.player;
+    static AudioStream BGM;
+    static AudioData MD;
+    public void go() {
+        music();
+        frame = new JFrame("Flappy Bird");
+        bird = new Bird();
+        rects = new ArrayList<Rectangle>();
+        panel = new GamePanel(this, bird, rects);
+        frame.add(panel);
+        
+        frame.setSize(WIDTH, HEIGHT);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+        frame.addKeyListener(this);
+        
+        paused = true;
+        
+        t = new Timer(1000/FPS, this);
+        t.start();
+    }
+    public static void main(String[] args) {
+        new FlappyBird().go();
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        panel.repaint();
+        if(!paused) {
+            bird.physics();
+            if(scroll % 90 == 0) {
+                Rectangle r = new Rectangle(WIDTH, 0, GamePanel.PIPE_W, (int) ((Math.random()*HEIGHT)/5f + (0.2f)*HEIGHT));
+                int h2 = (int) ((Math.random()*HEIGHT)/5f + (0.2f)*HEIGHT);
+                Rectangle r2 = new Rectangle(WIDTH, HEIGHT - h2, GamePanel.PIPE_W, h2);
+                rects.add(r);
+                rects.add(r2);
+            }
+            ArrayList<Rectangle> toRemove = new ArrayList<Rectangle>();
+            boolean game = true;
+            for(Rectangle r : rects) {
+                r.x-=3;
+                if(r.x + r.width <= 0) {
+                    toRemove.add(r);
+                }
+                if(r.contains(bird.x, bird.y)) {
+                    JOptionPane.showMessageDialog(frame, "You lose!\n"+"Your score was: "+time/60+".");
+                    game = false;
+                }
+            }
+            rects.removeAll(toRemove);
+            time++;
+            scroll++;
 
-	public final int WIDTH = 800, HEIGHT = 800;
-	public Renderer renderer;
-	public Rectangle bird;
-	public ArrayList<Rectangle> columns;
-	public int ticks, yMotion, score, highScore;
-	public boolean gameOver, started;
-	public Random rand;
-	
-  public FlappyBird()  //Frame of game
-  {
-    		JFrame jframe = new JFrame();
-		Timer timer = new Timer(20, this);
+            if(bird.y > HEIGHT || bird.y+bird.RAD < 0) {
+                game = false;
+            }
 
-		renderer = new Renderer();
-		rand = new Random();
-	  music();
-		jframe.add(renderer);
-		jframe.setTitle("Flappy Box");
-		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		jframe.setSize(WIDTH, HEIGHT);
-		jframe.addMouseListener(this);
-		jframe.addKeyListener(this);
-		jframe.setResizable(false);
-		jframe.setVisible(true);
-		
-		bird = new Rectangle(WIDTH / 2 - 10, HEIGHT / 2 - 10, 20, 20);
-		columns = new ArrayList<Rectangle>();
-
-		addColumn(true);
-		addColumn(true);
-		addColumn(true);
-		addColumn(true);
-
-		timer.start();
-  }
-
-  public void addColumn(boolean start) 			//obstacle
-	{
-		int space = 300; // it is the space between two obstacle vertically
-		int width = 100; // it is the width of rectangular obstacle
-		int height = 50 + rand.nextInt(300); //height of rectangular obstacle will be decided randomly
-
-		if (start) // at the start of game
-		{
-			columns.add(new Rectangle(WIDTH + width + columns.size() * 300, HEIGHT - height - 120, width, height));
-			columns.add(new Rectangle(WIDTH + width + (columns.size() - 1) * 300, 0, width, HEIGHT - height - space));
-		}
-		else
-		{
-			columns.add(new Rectangle(columns.get(columns.size() - 1).x + 600, HEIGHT - height - 120, width, height));
-			columns.add(new Rectangle(columns.get(columns.size() - 1).x, 0, width, HEIGHT - height - space));
-		}
-	}
-  public void paintColumn(Graphics g, Rectangle column)
-	{
-		g.setColor(Color.green.darker());
-		g.fillRect(column.x, column.y, column.width, column.height);
-	}
-	public void jump()  // responsible for jumps of box/bird
-	{
-		
-		if (gameOver) 		// game over then jump restarts the game
-		{
-		//	music();
-			bird = new Rectangle(WIDTH / 2 - 10, HEIGHT / 2 - 10, 20, 20);
-			columns.clear();
-			yMotion = 0;
-			score = 0;
-
-			addColumn(true);
-			addColumn(true);
-			addColumn(true);
-			addColumn(true);
-
-			gameOver = false;
-		}
-		if (!started)
-		{
-			started = true;
-		}
-		else if (!gameOver)
-		{
-			if (yMotion > 0)
-			{
-				yMotion = 0;
-			}
-
-			yMotion -= 11;
-		}
-	}
-	@Override
-	public void actionPerformed(ActionEvent e)
-	{
-		int speed;
-	if(score<10)speed=4;
-		else if(score<20)speed=6;
-	else if(score<30)speed=8;
-	else if(score<40)speed=10;
-	else speed=12;
-
-		ticks++;
-
-		if (started)
-		{
-			for (int i = 0; i < columns.size(); i++)
-			{
-				Rectangle column = columns.get(i);
-
-				column.x -= speed;
-			}
-
-			if (ticks % 2 == 0 && yMotion < 15)
-			{
-				yMotion +=2;
-			}
-
-			for (int i = 0; i < columns.size(); i++)
-			{
-				Rectangle column = columns.get(i);
-
-				if (column.x + column.width < 0)
-				{
-					columns.remove(column);
-
-					if (column.y == 0)
-					{
-						addColumn(false);
-					}
-				}
-			}
-
-			bird.y += yMotion;
-
-			for (Rectangle column : columns)
-			{
-				if (column.y == 0 && bird.x + bird.width / 2 > column.x + column.width / 2 - 10 && bird.x + bird.width / 2 < column.x + column.width / 2 + 10)
-				{
-					score++;
-				}
-
-				if (column.intersects(bird))
-				{
-					gameOver = true;
-
-					if (bird.x <= column.x)
-					{
-						bird.x = column.x - bird.width;
-
-					}
-					else
-					{
-						if (column.y != 0)
-						{
-							bird.y = column.y - bird.height;
-						}
-						else if (bird.y < column.height)
-						{
-							bird.y = column.height;
-						}
-					}
-				}
-			}
-
-			if (bird.y > HEIGHT - 120 || bird.y < 0)
-			{
-				gameOver = true;
-			}
-
-			if (bird.y + yMotion >= HEIGHT - 120)
-			{
-				bird.y = HEIGHT - 120 - bird.height;
-				gameOver = true;
-			}
-		}
-
-		renderer.repaint();
-	}
-	public void repaint(Graphics g) 	//responsible for handling graphics whenrestarting game
-	{
-		g.setColor(Color.cyan);
-		g.fillRect(0, 0, WIDTH, HEIGHT);
-
-		g.setColor(Color.cyan);
-		g.fillRect(0, HEIGHT - 120, WIDTH, 120);
-
-		g.setColor(Color.green.darker());
-		g.fillRect(0, HEIGHT - 120, WIDTH, 20);
-
-		g.setColor(Color.red);
-		g.fillRect(bird.x, bird.y, bird.width, bird.height);
-
-		for (Rectangle column : columns)
-		{
-			paintColumn(g, column);
-		}
-
-		g.setColor(Color.white);
-		g.setFont(new Font("Arial", 1, 100));
-		if (!started)
-		{
-			g.setFont(new Font("Arial", 1, 100));
-			g.drawString("Click to start!", 75, HEIGHT / 2 - 50);
-			g.setFont(new Font("Arial", 1, 30));
-			g.drawString("High score", 25, HEIGHT / 2 - 350);
-			g.drawString(String.valueOf(highScore), 25, HEIGHT / 2 - 310);
-			g.drawString("Score", WIDTH-200, HEIGHT / 2 - 350);
-			g.drawString(String.valueOf(score), WIDTH  - 100, HEIGHT / 2 - 310);
-		}
-
-		if (gameOver)
-		{
-			//AudioPlayer.player.stop(BGM);
-			g.setFont(new Font("Arial", 1, 100));
-			g.drawString("Game Over!", 100, HEIGHT / 2 - 50);
-			
-			if(score>highScore)
-				highScore=score;
-			g.setFont(new Font("Arial", 1, 30));
-			g.drawString("High score", 25, HEIGHT / 2 - 350);
-			g.drawString(String.valueOf(highScore), 25, HEIGHT / 2 - 310);
-			g.drawString("Score", WIDTH-100, HEIGHT / 2 - 350);
-			g.drawString(String.valueOf(score), WIDTH  - 100, HEIGHT / 2 - 310);
-		}
-
-		if (!gameOver && started)
-		{
-
-			g.setFont(new Font("Arial", 1, 30));
-			g.drawString("High score", 25, HEIGHT / 2 - 350);
-			g.drawString(String.valueOf(highScore), 25, HEIGHT / 2 - 310);
-			g.drawString("Score", WIDTH-100, HEIGHT / 2 - 350);
-			g.drawString(String.valueOf(score), WIDTH  - 100, HEIGHT / 2 - 310);
-		}
-	}
-	public static void music()
-	{
+            if(!game) {
+                rects.clear();
+                bird.reset();
+                time = 0;
+                scroll = 0;
+                paused = true;
+            }
+        }
+        else {
+            
+        }
+    }
+    
+    public int getScore() {
+        return time/60;
+    }
+    
+    public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode()==KeyEvent.VK_UP) {
+            paused = false;
+            bird.jump();
+        }
+        else if(e.getKeyCode()==KeyEvent.VK_SPACE) {
+            paused = true;
+        }
+    }
+    public void keyReleased(KeyEvent e) {
+        
+    }
+    public void keyTyped(KeyEvent e) {
+        
+    }
+    
+    public boolean paused() {
+        return paused;
+    }
+    public static void music()
+    {
 
 
-		ContinuousAudioDataStream loop = null;
+        ContinuousAudioDataStream loop = null;
 
-		try
-		{
-			InputStream test = new FileInputStream("E:\\Movies\\Batman\\S3\\b.wav");
-			BGM = new AudioStream(test);
-			AudioPlayer.player.start(BGM);
-			//  AudioPlayer.player.stop(BGM);
-		}
-		catch(FileNotFoundException e){
-			System.out.print(e.toString());
-		}
-		catch(IOException error)
-		{
-			System.out.print(error.toString());
-		}
-		MGP.start(loop);
-	}
-	public static void main(String[] args)
-	{
-		flappyBird = new FlappyBird();
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e)
-	{
-		jump();
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e)
-	{
-		if (e.getKeyCode() == KeyEvent.VK_SPACE)
-		{
-			jump();
-		}
-	}
-	
-	@Override
-	public void mousePressed(MouseEvent e)
-	{
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e)
-	{
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e)
-	{
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e)
-	{
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e)
-	{
-
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e)
-	{
-
-	}
+        try
+        {
+            InputStream test = new FileInputStream("E:\\Movies\\Batman\\S3\\b.wav");
+            BGM = new AudioStream(test);
+            AudioPlayer.player.start(BGM);
+            //  AudioPlayer.player.stop(BGM);
+        }
+        catch(FileNotFoundException e){
+            System.out.print(e.toString());
+        }
+        catch(IOException error)
+        {
+            System.out.print(error.toString());
+        }
+        MGP.start(loop);
+    }
 }
