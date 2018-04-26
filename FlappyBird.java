@@ -1,4 +1,5 @@
-package Flappy-Bird;package flappyBird;
+package Flappy-Bird;
+package flappyBird;
 
 import java.awt.Color;
 import java.awt.Font;
