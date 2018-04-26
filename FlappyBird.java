@@ -1,5 +1,4 @@
-package Flappy-Bird;
-package flappyBird;
+package Flappy-Bird;package flappyBird;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -89,8 +88,8 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 	{
 		
 		if (gameOver) 		// game over then jump restarts the game
-		{	
-			music();
+		{
+		//	music();
 			bird = new Rectangle(WIDTH / 2 - 10, HEIGHT / 2 - 10, 20, 20);
 			columns.clear();
 			yMotion = 0;
@@ -114,12 +113,18 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 				yMotion = 0;
 			}
 
-			yMotion -= 12;
+			yMotion -= 11;
 		}
 	}
 	@Override
 	public void actionPerformed(ActionEvent e)
-	{int speed = 10;
+	{
+		int speed;
+	if(score<10)speed=4;
+		else if(score<20)speed=6;
+	else if(score<30)speed=8;
+	else if(score<40)speed=10;
+	else speed=12;
 
 		ticks++;
 
@@ -134,7 +139,7 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 
 			if (ticks % 2 == 0 && yMotion < 15)
 			{
-				yMotion += 2;
+				yMotion +=2;
 			}
 
 			for (int i = 0; i < columns.size(); i++)
@@ -203,15 +208,15 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 		g.setColor(Color.cyan);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 
-		g.setColor(Color.orange);
+		g.setColor(Color.cyan);
 		g.fillRect(0, HEIGHT - 120, WIDTH, 120);
 
-		g.setColor(Color.green);
+		g.setColor(Color.green.darker());
 		g.fillRect(0, HEIGHT - 120, WIDTH, 20);
 
 		g.setColor(Color.red);
 		g.fillRect(bird.x, bird.y, bird.width, bird.height);
-		
+
 		for (Rectangle column : columns)
 		{
 			paintColumn(g, column);
@@ -223,7 +228,7 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 		{
 			g.setFont(new Font("Arial", 1, 100));
 			g.drawString("Click to start!", 75, HEIGHT / 2 - 50);
-			g.setFont(new Font("Arial", 1, 50));
+			g.setFont(new Font("Arial", 1, 30));
 			g.drawString("High score", 25, HEIGHT / 2 - 350);
 			g.drawString(String.valueOf(highScore), 25, HEIGHT / 2 - 310);
 			g.drawString("Score", WIDTH-200, HEIGHT / 2 - 350);
@@ -232,26 +237,26 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 
 		if (gameOver)
 		{
-			AudioPlayer.player.stop(BGM);
+			//AudioPlayer.player.stop(BGM);
 			g.setFont(new Font("Arial", 1, 100));
 			g.drawString("Game Over!", 100, HEIGHT / 2 - 50);
 			
 			if(score>highScore)
 				highScore=score;
-			g.setFont(new Font("Arial", 1, 50));
+			g.setFont(new Font("Arial", 1, 30));
 			g.drawString("High score", 25, HEIGHT / 2 - 350);
 			g.drawString(String.valueOf(highScore), 25, HEIGHT / 2 - 310);
-			g.drawString("Score", WIDTH-200, HEIGHT / 2 - 350);
+			g.drawString("Score", WIDTH-100, HEIGHT / 2 - 350);
 			g.drawString(String.valueOf(score), WIDTH  - 100, HEIGHT / 2 - 310);
 		}
 
 		if (!gameOver && started)
 		{
 
-			g.setFont(new Font("Arial", 1, 50));
+			g.setFont(new Font("Arial", 1, 30));
 			g.drawString("High score", 25, HEIGHT / 2 - 350);
 			g.drawString(String.valueOf(highScore), 25, HEIGHT / 2 - 310);
-			g.drawString("Score", WIDTH-200, HEIGHT / 2 - 350);
+			g.drawString("Score", WIDTH-100, HEIGHT / 2 - 350);
 			g.drawString(String.valueOf(score), WIDTH  - 100, HEIGHT / 2 - 310);
 		}
 	}
@@ -263,7 +268,7 @@ public class FlappyBird implements ActionListener, MouseListener, KeyListener
 
 		try
 		{
-			InputStream test = new FileInputStream("E:\\Movies\\Batman\\S3\\fl.wav");
+			InputStream test = new FileInputStream("E:\\Movies\\Batman\\S3\\b.wav");
 			BGM = new AudioStream(test);
 			AudioPlayer.player.start(BGM);
 			//  AudioPlayer.player.stop(BGM);
