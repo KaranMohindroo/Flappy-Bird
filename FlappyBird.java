@@ -97,9 +97,12 @@ public class FlappyBird implements ActionListener, KeyListener {
             scroll++;
 
             if(bird.y > HEIGHT || bird.y+bird.RAD < 0) {
-               
+                JOptionPane.showMessageDialog(frame, "You lose!\n"+"Your score was: "+time/60+".");
                 game = false;
-               
+                if(hs<time/60)
+                {
+                    hs=time/60;
+                }
             }
 
             if(!game) {
