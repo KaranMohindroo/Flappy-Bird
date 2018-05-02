@@ -3,56 +3,34 @@
  * and open the template in the editor.
  */
 package flappybird;
-
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 import sun.audio.ContinuousAudioDataStream;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Random;
-import javax.swing.JFrame;
 import javax.swing.Timer;
-import sun.audio.*;
-import javax.swing.*;
-import java.awt.event.*;
+import java.io.IOException;
 import java.io.*;
+import java.net.*;
 import sun.audio.*;
-import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.*;
-import java.util.ArrayList;
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.Timer;
 
-/**
- *
- * @author User
- */
 public class FlappyBird implements ActionListener, KeyListener {
     
-    public static final int FPS = 80, WIDTH = 1000, HEIGHT = 680;
+    public static final int WIDTH = 1000, HEIGHT = 680;
+    int FPS = 60;
     
     private Bird bird;
     private JFrame frame;
     private JPanel panel;
     private ArrayList<Rectangle> rects;
-    private int time, scroll;
+    private int time, scroll,hs;
     private Timer t;
     
     private boolean paused;
@@ -61,12 +39,12 @@ public class FlappyBird implements ActionListener, KeyListener {
     static AudioData MD;
     public void go() {
         music();
-        frame = new JFrame("Flappy Bird");
+        frame = new JFrame("Flappy Dragon");
+
         bird = new Bird();
         rects = new ArrayList<Rectangle>();
         panel = new GamePanel(this, bird, rects);
         frame.add(panel);
-        
         frame.setSize(WIDTH, HEIGHT);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
@@ -103,14 +81,28 @@ public class FlappyBird implements ActionListener, KeyListener {
                 if(r.contains(bird.x, bird.y)) {
                     JOptionPane.showMessageDialog(frame, "You lose!\n"+"Your score was: "+time/60+".");
                     game = false;
+                    if(hs<time/60)
+                    {
+                        hs=time/60;
+                    }
                 }
             }
             rects.removeAll(toRemove);
             time++;
+            if((time/60)<5)FPS=60;
+            else if((time/60)<10){FPS=80; Bird.fall1(0.2f);Bird.jump(7); }
+            else if((time/60)<15){FPS=100;Bird.fall1(0.15f);Bird.jump(6); }
+            else {FPS=120;Bird.fall1(0.1f);Bird.jump(5);}
+            t.setDelay(1000/FPS);
             scroll++;
 
             if(bird.y > HEIGHT || bird.y+bird.RAD < 0) {
+                JOptionPane.showMessageDialog(frame, "You lose!\n"+"Your score was: "+time/60+".");
                 game = false;
+                if(hs<time/60)
+                {
+                    hs=time/60;
+                }
             }
 
             if(!game) {
@@ -129,10 +121,17 @@ public class FlappyBird implements ActionListener, KeyListener {
     public int getScore() {
         return time/60;
     }
-    
+    public int getHScore() {
+
+        return hs;
+    }
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode()==KeyEvent.VK_UP) {
             paused = false;
+            if(hs<time/60)
+            {
+                hs=time/60;
+            }
             bird.jump();
         }
         else if(e.getKeyCode()==KeyEvent.VK_SPACE) {

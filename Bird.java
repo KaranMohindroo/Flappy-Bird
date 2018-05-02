@@ -7,40 +7,67 @@
     import java.awt.Color;
     import java.awt.Graphics;
     import java.awt.Image;
-    import java.io.File;
-    import java.io.IOException;
-    import javax.imageio.ImageIO;
+    import java.net.*;
+    import java.awt.*;
+    import javax.swing.*;
 
     public class Bird {
-        public float x, y, vx, vy;
-        public static final int RAD = 25;
+        public static float x, y, vx, vy;
+        public static float fall=0.3f;
+        public static int j=8;
+
+        public static final int RAD = 40;
         private Image img;
         public Bird() {
-            x = FlappyBird.WIDTH/2;
-            y = FlappyBird.HEIGHT/2;
-            try {
-                img = ImageIO.read(new File("sticker,375x360.u2.png"));
+            x = FlappyBird.WIDTH/2-100;
+            y = FlappyBird.HEIGHT/2-30;
+               img = getImage("Dragon.gif");
+        }
+        private static Image getImage(String filename) {
+
+            // to read from file
+            ImageIcon icon = new ImageIcon(filename);
+
+            // try to read from URL
+            if ((icon == null) || (icon.getImageLoadStatus() != MediaTracker.COMPLETE)) {
+                try {
+                    URL url = new URL(filename);
+                    icon = new ImageIcon(url);
+                } catch (Exception e) { /* not a url */ }
             }
-            catch(IOException e) {
-                e.printStackTrace();
+
+            // in case file is inside a .jar
+            if ((icon == null) || (icon.getImageLoadStatus() != MediaTracker.COMPLETE)) {
+                URL url = FlappyBird.class.getResource(filename);
+                if (url == null) throw new IllegalArgumentException("image " + filename + " not found");
+                icon = new ImageIcon(url);
             }
+
+            return icon.getImage();
+        }
+        public static void fall1(float f)
+        {
+            fall=f;
         }
         public void physics() {
             x+=vx;
             y+=vy;
-            vy+=0.5f;
+            vy+=fall;
         }
         public void update(Graphics g) {
             g.setColor(Color.BLACK);
-            g.drawImage(img, Math.round(x-RAD),Math.round(y-RAD),2*RAD,2*RAD, null);
-        }
-        public void jump() {
-            vy = -8;
+            g.drawImage(img, Math.round(x-RAD),Math.round(y-RAD),160,180, null);
         }
 
+        public static void jump(int j1) {
+            j=j1;
+        }
+        public static void jump() {
+            vy = -j;
+        }
         public void reset() {
-            x = 640/2;
-            y = 640/2;
+            x = FlappyBird.WIDTH/2-100;
+            y = FlappyBird.HEIGHT/2-30;
             vx = vy = 0;
         }
     }

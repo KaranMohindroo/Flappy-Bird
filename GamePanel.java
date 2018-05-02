@@ -30,7 +30,7 @@ public class GamePanel extends JPanel {
         this.fb = fb;
         this.bird = bird;
         this.rects = rects;
-        scoreFont = new Font("Comic Sans MS", Font.BOLD, 18);
+        scoreFont = new Font("Arial", Font.BOLD, 18);
         pauseFont = new Font("Arial", Font.BOLD, 48);
         
         try {
@@ -43,7 +43,7 @@ public class GamePanel extends JPanel {
     }
     @Override
     public void paintComponent(Graphics g) {
-        g.setColor(Color.blue);
+        g.setColor(Color.white);
         g.fillRect(0,0,FlappyBird.WIDTH,FlappyBird.HEIGHT);
         bird.update(g);
         g.setColor(Color.RED);
@@ -62,9 +62,9 @@ public class GamePanel extends JPanel {
             g2d.setTransform(old);
         }
         g.setFont(scoreFont);
-        g.setColor(Color.BLACK);
+        g.setColor(Color.red);
         g.drawString("Score: "+fb.getScore(), 10, 20);
-        
+        g.drawString("High Score: "+fb.getHScore(), 850, 20);
         if(fb.paused()) {
             g.setFont(pauseFont);
             g.setColor(new Color(0,0,0,170));
