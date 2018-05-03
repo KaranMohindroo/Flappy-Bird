@@ -13,7 +13,7 @@
 
     public class Bird {
         public static float x, y, vx, vy;
-        public static float fall=0.3f;
+        public static float fall=0.5f;
         public static int j=8;
 
         public static final int RAD = 40;
