@@ -86,6 +86,22 @@ public class FlappyBird implements ActionListener, KeyListener {
                         hs=time/60;
                     }
                 }
+                if(r.contains(bird.x+60, bird.y+50)) {
+                    JOptionPane.showMessageDialog(frame, "You lose!\n"+"Your score was: "+time/60+".");
+                    game = false;
+                    if(hs<time/60)
+                    {
+                        hs=time/60;
+                    }
+                }
+                if(r.contains(bird.x-60, bird.y-50)) {
+                    JOptionPane.showMessageDialog(frame, "You lose!\n"+"Your score was: "+time/60+".");
+                    game = false;
+                    if(hs<time/60)
+                    {
+                        hs=time/60;
+                    }
+                }
             }
             rects.removeAll(toRemove);
             time++;
