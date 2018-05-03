@@ -106,9 +106,9 @@ public class FlappyBird implements ActionListener, KeyListener {
             rects.removeAll(toRemove);
             time++;
             if((time/60)<5)FPS=60;
-            else if((time/60)<10){FPS=80; Bird.fall1(0.2f);Bird.jump(7); }
-            else if((time/60)<15){FPS=100;Bird.fall1(0.15f);Bird.jump(6); }
-            else {FPS=120;Bird.fall1(0.1f);Bird.jump(5);}
+            else if((time/60)<10){FPS=80; /*Bird.fall1(0.2f);Bird.jump(7);*/ }
+            else if((time/60)<15){FPS=100;/*Bird.fall1(0.15f);Bird.jump(6); */}
+            else {FPS=120;Bird.fall1(0.1f);/*Bird.jump(5);*/}
             t.setDelay(1000/FPS);
             scroll++;
 
