@@ -1,20 +1,22 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package flappybird;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.MediaTracker;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class GamePanel extends JPanel {
@@ -24,7 +26,7 @@ public class GamePanel extends JPanel {
     private FlappyBird fb;
     private Font scoreFont, pauseFont;
     public static final int PIPE_W = 50, PIPE_H = 30;
-    private Image pipeHead, pipeLength;
+    private Image pipeHead, pipeLength,bgimage;
 
     public GamePanel(FlappyBird fb, Bird bird, ArrayList<Rectangle> rects) {
         this.fb = fb;
@@ -36,6 +38,7 @@ public class GamePanel extends JPanel {
         try {
         	pipeHead = ImageIO.read(new File("78px-Pipe.png"));
         	pipeLength = ImageIO.read(new File("pipe_part.png"));
+        	bgimage=ImageIO.read(new File("snowp.png"));
         }
         catch(IOException e) {
             e.printStackTrace();
@@ -43,16 +46,20 @@ public class GamePanel extends JPanel {
     }
     @Override
     public void paintComponent(Graphics g) {
-        g.setColor(Color.white);
-        g.fillRect(0,0,FlappyBird.WIDTH,FlappyBird.HEIGHT);
+    	
+        Dimension size = new Dimension(bgimage.getWidth(this), bgimage.getHeight(this));
+        setPreferredSize(size);
+        setMinimumSize(size);
+        setMaximumSize(size);
+        setSize(size); 
+        g.drawImage(bgimage,0,0,this);       
         bird.update(g);
-        g.setColor(Color.RED);
         for(Rectangle r : rects) {
             Graphics2D g2d = (Graphics2D) g;
             g2d.setColor(Color.GREEN);
             //g2d.fillRect(r.x, r.y, r.width, r.height);
             AffineTransform old = g2d.getTransform();
-            g2d.translate(r.x+PIPE_W/2, r.y+PIPE_H/2);
+            g2d.translate(r.x+11+PIPE_W/2, r.y+11+PIPE_H/2);
             if(r.y < FlappyBird.HEIGHT/2) {
                 g2d.translate(0, r.height);
                 g2d.rotate(Math.PI);
@@ -61,10 +68,11 @@ public class GamePanel extends JPanel {
             g2d.drawImage(pipeLength, -PIPE_W/2, PIPE_H/2, GamePanel.PIPE_W, r.height, null);
             g2d.setTransform(old);
         }
+        setLayout(null);
         g.setFont(scoreFont);
         g.setColor(Color.red);
-        g.drawString("Score: "+fb.getScore(), 10, 20);
-        g.drawString("High Score: "+fb.getHScore(), 850, 20);
+        g.drawString("Score: "+fb.getScore(), 10, 30);
+        g.drawString("High Score: "+fb.getHScore(), 850, 30);
         if(fb.paused()) {
             g.setFont(pauseFont);
             g.setColor(new Color(0,0,0,170));
