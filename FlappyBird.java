@@ -23,7 +23,7 @@ import javax.swing.JOptionPane;
 
 public class FlappyBird implements ActionListener, KeyListener {
     
-    public static final int WIDTH = 1000, HEIGHT = 680;
+    public static final int WIDTH = 1300, HEIGHT = 700;
     int FPS = 60;
     
     private Bird bird;
