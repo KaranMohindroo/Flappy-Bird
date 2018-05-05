@@ -47,12 +47,12 @@ public class GamePanel extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
     	
-        Dimension size = new Dimension(1000,680);
+        Dimension size = new Dimension(fb.frame.getWidth(), fb.frame.getHeight());
         setPreferredSize(size);
         setMinimumSize(size);
         setMaximumSize(size);
         setSize(size); 
-        g.drawImage(bgimage,0,0,1000,680,this);    
+        g.drawImage(bgimage,0,0,this);    
         bird.update(g);
         for(Rectangle r : rects) {
             Graphics2D g2d = (Graphics2D) g;
