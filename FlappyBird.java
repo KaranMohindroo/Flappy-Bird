@@ -27,7 +27,7 @@ public class FlappyBird implements ActionListener, KeyListener {
     int FPS = 60;
     
     private Bird bird;
-    private JFrame frame;
+    public JFrame frame;
     private JPanel panel;
     private ArrayList<Rectangle> rects;
     private int time, scroll,hs;
