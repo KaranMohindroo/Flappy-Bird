@@ -72,7 +72,7 @@ public class GamePanel extends JPanel {
         g.setFont(scoreFont);
         g.setColor(Color.red);
         g.drawString("Score: "+fb.getScore(), 10, 30);
-        g.drawString("High Score: "+fb.getHScore(), 850, 30);
+        g.drawString("High Score: "+fb.getHScore(),1150, 30);
         if(fb.paused()) {
             g.setFont(pauseFont);
             g.setColor(new Color(0,0,0,170));
