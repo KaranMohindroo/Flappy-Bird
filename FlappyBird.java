@@ -1,13 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package flappybird;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
-import sun.audio.ContinuousAudioDataStream;
+import sun.audio.ContinuousAudioDataStream; 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -30,14 +26,17 @@ public class FlappyBird implements ActionListener, KeyListener {
     public JFrame frame;
     private JPanel panel;
     private ArrayList<Rectangle> rects;
-    private int time, scroll,hs;
+    private int time, scroll, score;
+    public int hs;
     private Timer t;
+    private String player;
+    public String hsplayer;
     
     private boolean paused;
     static AudioPlayer MGP = AudioPlayer.player;
     static AudioStream BGM;
     static AudioData MD;
-    public void go() {
+    public void go() throws Exception {
         music();
         frame = new JFrame("Flappy Dragon");
 
@@ -48,20 +47,22 @@ public class FlappyBird implements ActionListener, KeyListener {
         frame.setSize(WIDTH, HEIGHT);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+        player = JOptionPane.showInputDialog("Player's Name");
         frame.addKeyListener(this);
-        
         paused = true;
         
         t = new Timer(1000/FPS, this);
         t.start();
     }
-    public static void main(String[] args) {
-        new FlappyBird().go();
+    public static void main(String[] args) throws Exception {
+    	
+    	new FlappyBird().go();    
     }
     
     @Override
     public void actionPerformed(ActionEvent e) {
         panel.repaint();
+        
         if(!paused) {
             bird.physics();
             if(scroll % 90 == 0) {
@@ -79,46 +80,31 @@ public class FlappyBird implements ActionListener, KeyListener {
                     toRemove.add(r);
                 }
                 if(r.contains(bird.x, bird.y)) {
-                    JOptionPane.showMessageDialog(frame, "You lose!\n"+"Your score was: "+time/60+".");
+                	score=time/60;
                     game = false;
-                    if(hs<time/60)
-                    {
-                        hs=time/60;
-                    }
+                    
                 }
                 if(r.contains(bird.x+60, bird.y+50)) {
-                    JOptionPane.showMessageDialog(frame, "You lose!\n"+"Your score was: "+time/60+".");
+                	score=time/60;
                     game = false;
-                    if(hs<time/60)
-                    {
-                        hs=time/60;
-                    }
                 }
                 if(r.contains(bird.x-60, bird.y-50)) {
-                    JOptionPane.showMessageDialog(frame, "You lose!\n"+"Your score was: "+time/60+".");
+                	score=time/60;
                     game = false;
-                    if(hs<time/60)
-                    {
-                        hs=time/60;
-                    }
                 }
             }
             rects.removeAll(toRemove);
             time++;
             if((time/60)<5)FPS=60;
-            else if((time/60)<10){FPS=80; /*Bird.fall1(0.2f);Bird.jump(7);*/ }
-            else if((time/60)<15){FPS=100;/*Bird.fall1(0.15f);Bird.jump(6); */}
-            else {FPS=120;Bird.fall1(0.1f);/*Bird.jump(5);*/}
+            else if((time/60)<10){FPS=80; }//Bird.fall1(0.2f);Bird.jump(7); }
+            else if((time/60)<15){FPS=100;}//Bird.fall1(0.15f);Bird.jump(6); }
+            else {FPS=120;}//Bird.fall1(0.1f);Bird.jump(5);}
             t.setDelay(1000/FPS);
             scroll++;
 
             if(bird.y > HEIGHT || bird.y+bird.RAD < 0) {
-                JOptionPane.showMessageDialog(frame, "You lose!\n"+"Your score was: "+time/60+".");
+            	score=time/60;
                 game = false;
-                if(hs<time/60)
-                {
-                    hs=time/60;
-                }
             }
 
             if(!game) {
@@ -127,6 +113,15 @@ public class FlappyBird implements ActionListener, KeyListener {
                 time = 0;
                 scroll = 0;
                 paused = true;
+                try {
+                	System.out.println("before database");
+					new Database(player,score);
+					System.out.println("after database");
+} 
+                catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
             }
         }
         else {
@@ -135,18 +130,15 @@ public class FlappyBird implements ActionListener, KeyListener {
     }
     
     public int getScore() {
-        return time/60;
+        return score;
     }
-    public int getHScore() {
 
-        return hs;
-    }
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode()==KeyEvent.VK_UP) {
             paused = false;
-            if(hs<time/60)
+            if(score<time/60)
             {
-                hs=time/60;
+                score=time/60;
             }
             bird.jump();
         }
