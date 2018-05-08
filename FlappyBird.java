@@ -154,6 +154,12 @@ public class FlappyBird implements ActionListener, KeyListener {
     }
     
     public boolean paused() {
+        if(paused==true)
+        {
+            AudioPlayer.player.stop(BGM);
+        }
+        else
+            AudioPlayer.player.start(BGM);
         return paused;
     }
     public static void music()
