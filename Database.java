@@ -6,6 +6,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
@@ -32,12 +33,12 @@ public class Database
 		{
 			System.out.println("Build Connection");
 			String url="jdbc:mysql://localhost:3306/flappybird";        
-	        Class.forName("com.mysql.cj.jdbc.Driver");     // checked exception
-	        Connection con = DriverManager.getConnection(url,"root","");
-	        System.out.println("Connected");
+	        	Class.forName("com.mysql.cj.jdbc.Driver");     // checked exception
+	        	Connection con = DriverManager.getConnection(url,"root","");
+	        	System.out.println("Connected");
 			String query="SELECT Score From player where Name='"+player+"'";
 			Statement st = con.createStatement();            
-            ResultSet rs = st.executeQuery(query);
+           		 ResultSet rs = st.executeQuery(query);
 	       if(rs.next())
 	        {
 	        	System.out.println(rs.getInt("Score"));
@@ -67,25 +68,27 @@ public class Database
 		{
 			System.out.println("Build Connection");
 			String url="jdbc:mysql://localhost:3306/flappybird";        
-	        Class.forName("com.mysql.cj.jdbc.Driver");     // checked exception
-	        Connection con = DriverManager.getConnection(url,"root","");
-	        System.out.println("Connected");
+	        	Class.forName("com.mysql.cj.jdbc.Driver");     // checked exception
+	        	Connection con = DriverManager.getConnection(url,"root","");
+	        	System.out.println("Connected");
 	        
-			String query="SELECT Name, Score From player where Score = (select max(Score) from player)";
+			String query="select*from player a where(select count(distinct (Score)) from player where Score>=a.Score)<=3 order by Score desc;";
 			Statement st = con.createStatement();            
             ResultSet rs = st.executeQuery(query);
+            ArrayList<String> nm= new ArrayList<>();
+            ArrayList<Integer> sc=new ArrayList<>();
+            int c=0;
             if(rs != null)
             {
-            	System.out.println("ENTER");
-            	rs.next();
-            	//System.out.println(rs.getString("Name"));
-				p=rs.getString("Name");
-				//System.out.println(rs.getInt("Score"));
-				highs=rs.getInt("Score");
-				System.out.println("HIGH SCORE::"+p+" "+highs);
-				JOptionPane.showMessageDialog(null, "You lose!\n"+"Your score is: "+score+".\n\n High Score \n"+p+" : "+highs);
-				
+            	while(rs.next())
+            	{
+	            	System.out.println("ENTER");
+			nm.add(rs.getString("Name"));
+			sc.add(rs.getInt("Score"));
+            	}
             }
+            JOptionPane.showMessageDialog(null, "You lose!\n"+"Your score is: "+score+".\n\n Top Scorers \n"+nm.get(0)+" : "+sc.get(0)+"\n"+nm.get(1)+" : "+sc.get(1)+"\n"+nm.get(2)+" : "+sc.get(2));
+			
             con.close();
 	        rs.close();
 	        st.close();
